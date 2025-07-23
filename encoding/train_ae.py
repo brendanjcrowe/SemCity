@@ -18,9 +18,15 @@ class Trainer:
         self.epoch, self.start_epoch = 0, 0
         self.global_step = 0
         self.best_miou = 0
-
+        
         # dataset
         self.train_dataset, self.val_dataset, self.num_class, class_names = dataset_builder(args)
+        print(f"Dataset size: {len(self.train_dataset)}")  
+        print(f"Dataset path: {args.data_path}")  
+        if hasattr(self.train_dataset, 'files'):
+            print(f"Loaded files (first 10): {self.train_dataset.files[:10]}")
+        else:
+            print("No 'files' attribute in dataset")
         self.train_dataloader = torch.utils.data.DataLoader(self.train_dataset, batch_size=args.bs, shuffle=True, num_workers=8, pin_memory=True)
         self.val_dataloader = torch.utils.data.DataLoader(self.val_dataset, batch_size=1, shuffle=False, num_workers=8, pin_memory=True)
         self.iou_class_names = class_names
@@ -44,7 +50,8 @@ class Trainer:
         self.loss_fns['lovasz'] = None
 
     def train(self):
-        for epoch in range(30000):
+        # for epoch in range(30000):
+        for epoch in range(1):
             self.epoch = self.start_epoch + epoch + 1
                 
             print('Training...')
@@ -92,6 +99,7 @@ class Trainer:
             invalid = invalid.type(torch.LongTensor).cuda()
             b_size = vox.size(0)  # TODO: bsize is correct?
 
+            # torch.save(vox.shape, 'vox_shape.pt')
             # forward
             losses = {}
             with autocast():
@@ -207,7 +215,7 @@ class Trainer:
         if self.best_miou < miou:
             self.best_miou = miou
             checkpoint = {'optimizer': self.optimizer.state_dict(), 'model': self.model.state_dict(), 'epoch': self.epoch}  # TODO: save scheduler
-            torch.save(checkpoint, self.args.save_path + "/" + str(self.epoch) + "_miou=" + str(f"{miou:.3f}") + '.pt')
+            torch.save(checkpoint,   "exp/ae/" + str(self.epoch) + "_miou=" + str(f"{miou:.3f}") + '.pt')
 
 def get_pred_mask(model_output, separate_decoder=False):
     preds = model_output

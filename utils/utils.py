@@ -78,7 +78,6 @@ def save_remap_lut(args, pred, folder, idx, learning_map_inv, training, make_num
         lower_half = remap_lut_First[lower_half]  # do the remapping of semantics
         pred = (upper_half << 16) + lower_half  # reconstruct full label
         pred = pred.astype(np.uint32)
-
     if training:
         final_preds = pred.astype(np.uint16)        
         os.umask(0)

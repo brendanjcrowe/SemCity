@@ -9,6 +9,8 @@ from scipy.ndimage import distance_transform_edt
 
 class SemKITTI(data.Dataset):
     def __init__(self, args, imageset='train', get_query=True, folder = 'voxels'):
+    # def __init__(self, args, imageset='train', get_query=True, folder = 'labels'):
+        print(args.yaml_path,"args yaml path")
         with open(args.yaml_path, 'r') as stream:
             semkittiyaml = yaml.safe_load(stream)
             
@@ -49,6 +51,7 @@ class SemKITTI(data.Dataset):
         
         self.im_idx=[]
         for i_folder in split:
+  
             # velodyne path corresponding to voxel path
             complete_path = os.path.join(args.data_path, str(i_folder).zfill(2), folder)
             files = list(pathlib.Path(complete_path).glob('*.label'))

@@ -3,6 +3,8 @@ from dataset.carla_dataset import CarlaDataset
 
 def dataset_builder(args):
     print("build dataset")
+    print(args.dataset)
+    
     if args.dataset == 'kitti':
         dataset = SemKITTI(args, 'train')
         val_dataset = SemKITTI(args, 'val')

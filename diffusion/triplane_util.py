@@ -58,7 +58,9 @@ def build_sampling_model(args):
     model = model.cuda().eval()
     
     ae = AutoEncoderGroupSkip(args)
-    ae.load_state_dict(torch.load(AE_PATH, map_location='cpu')['model'])
+    # ae.load_state_dict(torch.load(AE_PATH, map_location='cpu')['model'])
+    ae.load_state_dict(torch.load("exp/ae/7_miou=83.684.pt", map_location='cpu')['model'])
+
     ae = ae.cuda().eval()
 
     sample_fn = (diffusion.p_sample_loop if not args.repaint else diffusion.p_sample_loop_scene_repaint)    
